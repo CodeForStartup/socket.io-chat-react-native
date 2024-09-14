@@ -14,9 +14,12 @@ import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import socket from "@/constants/socket";
+import { UserItem } from "@/components/chat/UserItem";
+import { Channel } from "@/type/chat";
+import { useAppStore } from "@/store";
 
 export default function HomeScreen() {
-  const [listChannel, setListChannel] = useState<any>([]);
+  const setListChannel = useAppStore((state) => state.setListChannel);
 
   const handleGetListChannel = async () => {
     if (!socket.connected) {
@@ -42,13 +45,13 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ThemedText>List chat</ThemedText>
-
+      <View style={{ padding: 16 }}>
+        <TextInput placeholder="Search" />
+      </View>
       <FlatList
-        data={listChannel}
-        renderItem={({ item }) => (
-          <ThemedText>{item.name || "user"}</ThemedText>
-        )}
+        style={{ padding: 16 }}
+        data={useAppStore((state) => state.listChannel)}
+        renderItem={({ item }) => <UserItem channel={item} />}
       />
     </SafeAreaView>
   );

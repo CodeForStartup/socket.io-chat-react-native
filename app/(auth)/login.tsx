@@ -7,16 +7,17 @@ import { ThemedText } from "@/components/ThemedText";
 import { useLogin } from "@/hooks/useLogin";
 
 export default function Login() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn } = useAuth();
+  const { signIn: signInToAuthProvider } = useAuth();
 
   const { onLogin, isLoading, error } = useLogin();
   const onLoginPress = async () => {
     const result = await onLogin(username, password);
+
     await AsyncStorage.setItem("user", JSON.stringify(result?.data));
-    signIn({
+
+    signInToAuthProvider({
       username: result?.data.username,
       id: result?.data.id,
       password: result?.data.password,

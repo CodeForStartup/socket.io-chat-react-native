@@ -3,10 +3,16 @@ import axios from "axios";
 import { useState } from "react";
 
 const login = async (username: string, password: string) => {
-  const response = await axios.post(`${API_URL}/login`, {
-    username,
-    password,
-  });
+  const response = await axios.post(
+    `${API_URL}/login`,
+    {
+      username,
+      password,
+    },
+    {
+      timeout: 5000,
+    }
+  );
 
   return response;
 };
