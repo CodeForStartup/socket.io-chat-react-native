@@ -4,8 +4,14 @@ export interface User {
   is_online: boolean;
 }
 
+export enum ChannelType {
+  PUBLIC = "public",
+  PRIVATE = "private",
+}
+
 export interface Channel {
   id: string;
   name: string;
   users: string[];
+  type: ChannelType;
 }

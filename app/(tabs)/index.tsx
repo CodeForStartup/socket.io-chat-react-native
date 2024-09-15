@@ -33,6 +33,9 @@ export default function HomeScreen() {
       const res = await socket.emitWithAck("channel:list", {
         size: 100,
       });
+
+      console.log("channel: ", res?.data);
+
       setListChannel(res?.data);
     } catch (error) {
       console.error("Error during socket emitWithAck:", error);
