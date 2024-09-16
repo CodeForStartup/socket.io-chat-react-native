@@ -7,24 +7,17 @@ import { useAppStore } from "@/store";
 import { router } from "expo-router";
 
 export const UserItem = ({ channel }: { channel: Channel }) => {
-  const { setCurrentUser, listUser } = useAppStore();
   const [userName, setUserName] = useState<string>(channel?.name || "");
 
   const handleGetListChannel = async () => {
-    if (channel?.type === ChannelType.PUBLIC) return;
-
-    if (!socket.connected) {
-      console.log("Socket is not connected.");
+    if (channel?.type === ChannelType.PUBLIC || !socket.connected) {
       return;
-    } else {
-      console.log("Socket is connected.");
     }
 
     try {
       const res = await socket.emitWithAck("user:get", {
         userId: channel?.users?.at(0),
       });
-      console.log("user: ", { channel, res });
 
       setUserName(res?.data?.username);
     } catch (error) {
@@ -44,7 +37,16 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         borderColor: "#e0e0e0",
       }}
     >
-      <Pressable onPress={() => router.navigate("/(chat)/chat")}>
+      <Pressable
+        onPress={() =>
+          router.push({
+            pathname: "/(chat)/chat",
+            params: {
+              channelId: channel?.id,
+            },
+          })
+        }
+      >
         <ThemedText style={{ fontSize: 16, fontWeight: "500" }}>
           {userName}
         </ThemedText>

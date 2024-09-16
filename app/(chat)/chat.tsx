@@ -1,25 +1,70 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { GiftedChat, IMessage } from "react-native-gifted-chat";
+import { useEffect, useState } from "react";
+import socket from "@/constants/socket";
+import { useLocalSearchParams } from "expo-router";
+import { useAppStore } from "@/store";
 import { useAuth } from "@/context/auth";
+import { Message } from "@/type/chat";
 
 export default function ChatScreen() {
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const { channelId } = useLocalSearchParams();
+  const { user } = useAuth();
+
+  const loadMessages = async () => {
+    if (!channelId) return;
+
+    const query = {
+      size: 20,
+      channelId,
+      orderBy: "id:desc",
+    };
+
+    const res = await socket.emitWithAck("message:list", query);
+
+    if (res.status !== "OK") {
+      return;
+    }
+
+    const newMessages = res.data.map((message: Message) => ({
+      _id: message.id,
+      text: message.content,
+      user: {
+        _id: message.from,
+        name: "user",
+      },
+    }));
+
+    setMessages(newMessages);
+  };
+
+  useEffect(() => {
+    loadMessages();
+  }, []);
+
+  const onSend = async (messages: IMessage[]) => {
+    try {
+      await socket.emitWithAck("message:send", {
+        channelId: channelId,
+        content: messages[0].text,
+      });
+
+      setMessages((prev) => [...prev, messages[0]]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Ionicons size={310} name="code-slash" style={styles.headerImage} />
-      }
-    >
-      <ThemedText>Chat screen</ThemedText>
-    </ParallaxScrollView>
+    <GiftedChat
+      messages={messages}
+      onSend={(messages) => onSend(messages)}
+      user={{
+        _id: user?.id!,
+      }}
+    />
   );
 }
 

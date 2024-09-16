@@ -15,3 +15,10 @@ export interface Channel {
   users: string[];
   type: ChannelType;
 }
+
+export interface Message {
+  id: string;
+  channelId: string;
+  content: string;
+  from: string;
+}

@@ -23,18 +23,13 @@ export default function HomeScreen() {
 
   const handleGetListChannel = async () => {
     if (!socket.connected) {
-      console.log("Socket is not connected.");
       return;
-    } else {
-      console.log("Socket is connected.");
     }
 
     try {
       const res = await socket.emitWithAck("channel:list", {
         size: 100,
       });
-
-      console.log("channel: ", res?.data);
 
       setListChannel(res?.data);
     } catch (error) {

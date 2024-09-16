@@ -12,6 +12,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Provider, UserCredentials } from "@/context/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -47,17 +48,21 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider userCredentials={loadedUser}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          {loadedUser ? (
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          ) : (
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          )}
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </ThemeProvider>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider userCredentials={loadedUser}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            {loadedUser ? (
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            ) : (
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            )}
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ThemeProvider>
+      </Provider>
+    </SafeAreaProvider>
   );
 }
