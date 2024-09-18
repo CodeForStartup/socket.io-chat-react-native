@@ -1,37 +1,39 @@
 import { API_URL } from "@/constants";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
 
-const login = async (username: string, password: string) => {
-  const response = await axios.post(
-    `${API_URL}/login`,
-    {
-      username,
-      password,
-    },
-    {
-      timeout: 5000,
-    }
-  );
+export interface LoginData {
+  username: string;
+  password: string;
+}
 
-  return response;
+export interface LoginResponse {
+  username: string;
+  id: string;
+}
+
+const login = async (data: LoginData): Promise<LoginResponse> => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/login`,
+      {
+        username: data.username,
+        password: data.password,
+      },
+      {
+        timeout: 5000,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const useLogin = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const onLogin = async (username: string, password: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      return await login(username, password);
-    } catch (e) {
-      setError("Wrong user name or password");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return { onLogin, isLoading, error };
+  return useMutation({
+    mutationFn: (data: LoginData) => login(data),
+  });
 };

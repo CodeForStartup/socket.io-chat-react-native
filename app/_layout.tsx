@@ -14,9 +14,12 @@ import { Provider, UserCredentials } from "@/context/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -50,22 +53,30 @@ export default function RootLayout() {
 
   return (
     <PaperProvider>
-      <SafeAreaProvider>
-        <Provider userCredentials={loadedUser}>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack>
-              {loadedUser ? (
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              ) : (
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              )}
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </ThemeProvider>
-        </Provider>
-      </SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <Provider userCredentials={loadedUser}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <Stack>
+                {loadedUser ? (
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                ) : (
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                )}
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </ThemeProvider>
+          </Provider>
+        </SafeAreaProvider>
+      </QueryClientProvider>
     </PaperProvider>
   );
 }

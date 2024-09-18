@@ -4,7 +4,7 @@ import React, { FC, ReactNode } from "react";
 export type UserCredentials = {
   username: string;
   id: string;
-  password: string;
+  password?: string;
 };
 
 type CredentialsContext = {
