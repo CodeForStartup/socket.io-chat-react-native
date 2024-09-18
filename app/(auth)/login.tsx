@@ -1,10 +1,11 @@
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, View, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "@/context/auth";
 import { ThemedText } from "@/components/ThemedText";
 import { useLogin } from "@/hooks/useLogin";
+import { Controller, useForm } from "react-hook-form";
+import { Button } from "react-native-paper";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -24,30 +25,52 @@ export default function Login() {
     });
   };
 
+  const { control, handleSubmit } = useForm();
+
   return (
     <View style={styles.container}>
-      {error && <ThemedText style={{ color: "red" }}>{error}</ThemedText>}
-      <TextInput
-        style={styles.textInput}
-        value={username}
-        placeholder="Username"
-        onChangeText={(text) => setUsername(text)}
+      <Controller
+        control={control}
+        name="username"
+        render={({ field: { value, onChange } }) => (
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            placeholder="Username"
+            style={{
+              backgroundColor: "transparent",
+              borderWidth: 1,
+              borderColor: "grey",
+              borderRadius: 32,
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+            }}
+          />
+        )}
       />
-      <TextInput
-        style={styles.textInput}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholder="Type password"
-        secureTextEntry
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { value, onChange } }) => (
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            placeholder="Password"
+            secureTextEntry
+            style={{
+              backgroundColor: "transparent",
+              borderWidth: 1,
+              borderColor: "grey",
+              borderRadius: 32,
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+            }}
+          />
+        )}
       />
-      <View style={styles.separator} />
-      <Pressable
-        onPress={onLoginPress}
-        disabled={isLoading}
-        style={[styles.button, { opacity: isLoading ? 0.5 : 1 }]}
-      >
+      <Button mode="contained" onPress={onLoginPress} disabled={isLoading}>
         <ThemedText style={styles.text}>Login</ThemedText>
-      </Pressable>
+      </Button>
     </View>
   );
 }
@@ -55,8 +78,12 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     justifyContent: "center",
+    gap: 16,
+    width: "100%",
+    paddingHorizontal: 32,
+    // backfaceVisibility
   },
   separator: {
     marginTop: 16,
@@ -67,7 +94,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "grey",
     marginTop: 8,
-    width: "60%",
+    width: "100%",
     borderRadius: 32,
   },
   text: {

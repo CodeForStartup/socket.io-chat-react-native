@@ -4,7 +4,6 @@ import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { useEffect, useState } from "react";
 import socket from "@/constants/socket";
 import { useLocalSearchParams } from "expo-router";
-import { useAppStore } from "@/store";
 import { useAuth } from "@/context/auth";
 import { Message } from "@/type/chat";
 
@@ -19,7 +18,7 @@ export default function ChatScreen() {
     const query = {
       size: 20,
       channelId,
-      orderBy: "id:desc",
+      orderBy: "id:asc",
     };
 
     const res = await socket.emitWithAck("message:list", query);
@@ -28,12 +27,13 @@ export default function ChatScreen() {
       return;
     }
 
+    //
     const newMessages = res.data.map((message: Message) => ({
       _id: message.id,
       text: message.content,
       user: {
         _id: message.from,
-        name: "user",
+        name: "user", // TODO: get user name from backend
       },
     }));
 
@@ -57,9 +57,11 @@ export default function ChatScreen() {
     }
   };
 
+  // TODO: add typing indicator
+  // TODO: add message read/unread status
   return (
     <GiftedChat
-      messages={messages}
+      messages={messages.reverse()}
       onSend={(messages) => onSend(messages)}
       user={{
         _id: user?.id!,
