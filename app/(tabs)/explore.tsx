@@ -9,14 +9,22 @@ import { ThemedView } from "@/components/ThemedView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useAuth } from "@/context/auth";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function TabTwoScreen() {
   const { signOut } = useAuth();
 
-  const onLogout = () => {
-    AsyncStorage.removeItem("user");
-    signOut();
-    router.replace("/login");
+  const { mutate: onLogoutBE, data: logoutData, isPending } = useLogout();
+
+  const onLogout = async () => {
+    try {
+      await onLogoutBE();
+      AsyncStorage.removeItem("user");
+      signOut();
+      router.replace("/login");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

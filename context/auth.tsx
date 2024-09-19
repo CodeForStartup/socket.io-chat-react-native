@@ -1,5 +1,5 @@
 import { useRouter, useSegments } from "expo-router";
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode, useEffect } from "react";
 
 export type UserCredentials = {
   username: string;
@@ -34,10 +34,9 @@ function useProtectedRoute(user: UserCredentials | null) {
   const segments = useSegments();
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const inAuthGroup = segments[0] === "(auth)";
 
-    console.log({ user, segments });
     if (
       // If the user is not signed in and the initial segment is not anything in the auth group.
       !user &&

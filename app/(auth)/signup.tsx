@@ -1,75 +1,73 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, View, TextInput } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StyleSheet, View } from "react-native";
 import { useAuth } from "@/context/auth";
-import { ThemedText } from "@/components/ThemedText";
-import { useLogin } from "@/hooks/useLogin";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Button, Text } from "react-native-paper";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextInputField from "@/components/form/TextInput";
 import { router } from "expo-router";
+import { useSignup } from "@/hooks/useSignup";
 
-interface LoginForm {
+interface SignupForm {
   username: string;
   password: string;
+  password_confirm: string;
 }
 
 export default function Login() {
   const { signIn: signInToAuthProvider } = useAuth();
 
-  const form = useForm<LoginForm>({
+  const form = useForm<SignupForm>({
     defaultValues: {
       username: "",
       password: "",
+      password_confirm: "",
     },
     resolver: zodResolver(
-      z.object({
-        username: z.string().min(1, { message: "Username is required" }),
-        // .min(1, { message: "Username must be at least 8 characters long" })
-        // .max(16, { message: "Username must be at most 16 characters long" })
-        // .regex(/^[a-zA-Z0-9_]+$/, {
-        //   message:
-        //     "Username can only contain letters, numbers, and underscores",
-        // }),
-        password: z.string().min(1, { message: "Password is required" }),
-        // .min(1, { message: "Password must be at least 8 characters long" })
-        // .max(16, { message: "Password must be at most 16 characters long" })
-        // .regex(/[A-Z]/, {
-        //   message: "Password must contain at least one uppercase letter",
-        // })
-        // .regex(/[0-9]/, {
-        //   message: "Password must contain at least one number",
-        // })
-        // .regex(/[^a-zA-Z0-9]/, {
-        //   message: "Password must contain at least one special character",
-        // }),
-      })
+      z
+        .object({
+          username: z
+            .string()
+            .min(1, { message: "Username is required" })
+            .min(1, { message: "Username must be at least 8 characters long" })
+            .max(16, { message: "Username must be at most 16 characters long" })
+            .regex(/^[a-zA-Z0-9_]+$/, {
+              message:
+                "Username can only contain letters, numbers, and underscores",
+            }),
+          password: z
+            .string()
+            .min(1, { message: "Password is required" })
+            .max(16, { message: "Password must be at most 16 characters long" })
+            .regex(/^[a-zA-Z0-9_]+$/, {
+              message:
+                "Username can only contain letters, numbers, and underscores",
+            }),
+          password_confirm: z
+            .string()
+            .min(1, { message: "Password confirmation is required" }),
+        })
+        .refine((data) => data.password === data.password_confirm, {
+          message: "Passwords do not match",
+          path: ["password_confirm"],
+        })
     ),
   });
 
-  const { mutate: onLogin, data: loginData, isPending } = useLogin();
+  const { mutate: onSignup, data: signupData, isPending } = useSignup();
 
-  const onLoginPress = async (data: LoginForm) => {
+  const onSignupPress = async (data: SignupForm) => {
     try {
-      await onLogin({
+      await onSignup({
         username: data.username?.toLowerCase(),
         password: data.password,
       });
 
-      if (!loginData) {
-        throw new Error("Login failed");
+      if (!signupData) {
+        return;
       }
 
-      console.log(loginData);
-
-      await AsyncStorage.setItem("user", JSON.stringify(loginData));
-
-      signInToAuthProvider({
-        username: loginData?.username,
-        id: loginData?.id,
-      });
+      router.push("/(auth)/login");
     } catch (error) {
       // show notification...
       console.log(error);
@@ -78,6 +76,7 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      <Text variant="headlineLarge">Get started</Text>
       <FormProvider {...form}>
         <TextInputField
           name="username"
@@ -91,24 +90,31 @@ export default function Login() {
           secureTextEntry
         />
 
+        <TextInputField
+          name="password_confirm"
+          label="Confirm password"
+          placeholder="Confirm password"
+          secureTextEntry
+        />
+
         <Button
           mode="contained"
-          onPress={form.handleSubmit(onLoginPress)}
+          onPress={form.handleSubmit(onSignupPress)}
           disabled={isPending}
         >
           <Text variant="bodyMedium" style={{ color: "white" }}>
-            Login
+            Sign up
           </Text>
         </Button>
       </FormProvider>
 
       <Button
         mode="text"
-        onPress={() => router.push("/(auth)/signup")}
+        onPress={() => router.push("/(auth)/login")}
         disabled={isPending}
       >
         <Text variant="bodyMedium" style={{ color: "#05BFDB" }}>
-          Sign up
+          Login
         </Text>
       </Button>
     </View>
@@ -118,12 +124,10 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
     justifyContent: "center",
     gap: 16,
     width: "100%",
     paddingHorizontal: 32,
-    // backfaceVisibility
   },
   separator: {
     marginTop: 16,
