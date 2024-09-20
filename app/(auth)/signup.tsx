@@ -63,10 +63,6 @@ export default function Login() {
         password: data.password,
       });
 
-      if (!signupData) {
-        return;
-      }
-
       router.push("/(auth)/login");
     } catch (error) {
       // show notification...

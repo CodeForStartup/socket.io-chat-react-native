@@ -1,9 +1,9 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -11,24 +11,57 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors.light.tabIconSelected,
         headerShown: false,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "chatbox-ellipses" : "chatbox-ellipses-outline"}
+              color={
+                focused
+                  ? Colors.light.tabIconSelected
+                  : Colors.light.tabIconDefault
+              }
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="user"
         options={{
-          title: 'Explore',
+          title: "User",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "person" : "person-outline"}
+              color={
+                focused
+                  ? Colors.light.tabIconSelected
+                  : Colors.light.tabIconDefault
+              }
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="about"
+        options={{
+          title: "About",
+
+          tabBarItemStyle: {},
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "code-slash" : "code-slash-outline"}
+              color={
+                focused
+                  ? Colors.light.tabIconSelected
+                  : Colors.light.tabIconDefault
+              }
+            />
           ),
         }}
       />

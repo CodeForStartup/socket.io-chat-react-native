@@ -17,6 +17,7 @@ import socket from "@/constants/socket";
 import { UserItem } from "@/components/chat/UserItem";
 import { Channel } from "@/type/chat";
 import { useAppStore } from "@/store";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const setListChannel = useAppStore((state) => state.setListChannel);
@@ -37,17 +38,33 @@ export default function HomeScreen() {
     }
   };
 
+  const handleAddFriend = async () => {
+    router.push("/add-friend");
+  };
+
   useEffect(() => {
     handleGetListChannel();
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ padding: 16 }}>
-        <TextInput placeholder="Search" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View
+        style={{
+          padding: 16,
+          // backgroundColor: "red",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <Ionicons name="search" size={20} color="black" />
+        <TextInput placeholder="Search" style={{ flex: 1 }} />
+        <Pressable onPress={handleAddFriend} style={{ padding: 8 }}>
+          <Ionicons name="person-add" size={20} color="black" />
+        </Pressable>
       </View>
       <FlatList
-        style={{ padding: 16 }}
+        // style={{ paddingTop: 16 }}
         data={useAppStore((state) => state.listChannel)}
         renderItem={({ item }) => <UserItem channel={item} />}
       />
