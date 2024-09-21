@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform, Pressable } from "react-native";
+import { StyleSheet, Image, Platform, Pressable, View } from "react-native";
 
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -10,11 +10,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useAuth } from "@/context/auth";
 import { useLogout } from "@/hooks/useLogout";
+import { Button, Text } from "react-native-paper";
 
 export default function TabTwoScreen() {
   const { signOut } = useAuth();
 
   const { mutate: onLogoutBE, data: logoutData, isPending } = useLogout();
+
+  const { user } = useAuth();
 
   const onLogout = async () => {
     try {
@@ -28,32 +31,40 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Ionicons size={310} name="code-slash" style={styles.headerImage} />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title"></ThemedText>
-      </ThemedView>
-      <ThemedText>
-        This app includes example code to help you get started.
-      </ThemedText>
-
-      <Pressable onPress={onLogout} style={styles.button}>
-        <ThemedText style={styles.buttonTitle}>Logout</ThemedText>
-      </Pressable>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <Ionicons name="person-circle-outline" size={128} color="#808080" />
+      <Text style={styles.username}>#{user?.username}</Text>
+      <Button
+        mode="contained"
+        onPress={onLogout}
+        loading={isPending}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Logout</Text>
+      </Button>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 48,
+  },
   button: {
-    padding: 16,
-    backgroundColor: "red",
-    borderRadius: 16,
-    textAlign: "center",
+    width: "100%",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
   headerImage: {
     color: "#808080",
@@ -64,8 +75,5 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     gap: 8,
-  },
-  buttonTitle: {
-    color: "white",
   },
 });
