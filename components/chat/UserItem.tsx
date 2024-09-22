@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { Badge, Text } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppStore, useGetUserByIdAppStore } from "@/store";
 
 export const UserItem = ({ channel }: { channel: Channel }) => {
-  const [userName, setUserName] = useState<string>(channel?.name || "");
+  const user = useGetUserByIdAppStore(channel?.users?.at(0));
+  const { setListUser, listUser } = useAppStore();
 
-  const handleGetListChannel = async () => {
+  const handleFetchUsers = async () => {
     if (channel?.type === ChannelType.PUBLIC || !socket.connected) {
       return;
     }
@@ -19,14 +21,24 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         userId: channel?.users?.at(0),
       });
 
-      setUserName(res?.data?.username);
+      console.log(res);
+      const newListUser = [...listUser];
+      const index = newListUser.findIndex((u) => u.id === res?.data?.id);
+      if (index !== -1) {
+        newListUser[index] = res?.data;
+      } else {
+        newListUser.push(res?.data);
+      }
+
+      console.log(newListUser);
+
+      setListUser(newListUser);
     } catch (error) {
       console.error("Error during socket emitWithAck:", error);
     }
   };
-
   useEffect(() => {
-    handleGetListChannel();
+    handleFetchUsers();
   }, []);
 
   return (
@@ -42,11 +54,25 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         }
         style={styles.button}
       >
-        <Text style={styles.hash}>#</Text>
+        <View style={styles.hash}>
+          <Text>{channel?.type === ChannelType.PUBLIC ? "#" : "@"}</Text>
+          {channel?.type === ChannelType.PRIVATE && (
+            <View
+              style={[
+                styles.dot,
+                { backgroundColor: user?.isOnline ? "green" : "red" },
+              ]}
+            />
+          )}
+        </View>
         <Text variant="labelLarge" style={styles.label}>
-          {userName}
+          {channel?.type === ChannelType.PRIVATE
+            ? user?.username
+            : channel?.name}
         </Text>
-        <Badge>3</Badge>
+        {Number(channel?.unreadCount) > 0 && (
+          <Badge>{channel?.unreadCount}</Badge>
+        )}
       </Pressable>
     </View>
   );
@@ -70,5 +96,25 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     fontSize: 16,
+    backgroundColor: "#eee",
+    borderRadius: 10,
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dot: {
+    color: "#000",
+    fontSize: 40,
+    padding: 0,
+    margin: 0,
+    backgroundColor: "red",
+    borderRadius: 10,
+    lineHeight: 0,
+    position: "absolute",
+    width: 8,
+    height: 8,
+    right: 0,
+    bottom: 0,
   },
 });

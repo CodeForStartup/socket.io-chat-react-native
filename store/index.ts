@@ -22,3 +22,11 @@ export const useAppStore = create<AppStore>((set) => ({
   currentChannel: null,
   setCurrentChannel: (currentChannel) => set({ currentChannel }),
 }));
+
+// select user by id
+export const useGetUserByIdAppStore = (id?: string) => {
+  if (!id) return null;
+
+  const user = useAppStore.getState().listUser.find((user) => user.id === id);
+  return user;
+};

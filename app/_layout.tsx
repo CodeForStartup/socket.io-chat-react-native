@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import useBindMessages from "@/hooks/useBindMessages";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,6 +37,8 @@ export default function RootLayout() {
     }
     setIsReady(true);
   };
+
+  useBindMessages();
 
   useEffect(() => {
     getUserFromStorage();
