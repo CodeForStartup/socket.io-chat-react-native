@@ -1,10 +1,9 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { Channel, ChannelType } from "@/type/chat";
 import socket from "@/constants/socket";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { router } from "expo-router";
 import { Badge, Text } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
 import { useAppStore, useGetUserByIdAppStore } from "@/store";
 
 export const UserItem = ({ channel }: { channel: Channel }) => {
@@ -21,22 +20,22 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         userId: channel?.users?.at(0),
       });
 
-      console.log(res);
-      const newListUser = [...listUser];
-      const index = newListUser.findIndex((u) => u.id === res?.data?.id);
-      if (index !== -1) {
-        newListUser[index] = res?.data;
+      const user = listUser.get(res?.data?.id);
+      if (user) {
+        listUser.set(res?.data?.id, {
+          ...user,
+          ...res?.data,
+        });
       } else {
-        newListUser.push(res?.data);
+        listUser.set(res?.data?.id, res?.data);
       }
 
-      console.log(newListUser);
-
-      setListUser(newListUser);
+      setListUser(listUser);
     } catch (error) {
       console.error("Error during socket emitWithAck:", error);
     }
   };
+
   useEffect(() => {
     handleFetchUsers();
   }, []);

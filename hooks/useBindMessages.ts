@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import socket from "@/constants/socket";
 import { useAppStore } from "@/store";
-import { Channel, Message, User } from "@/type/chat";
+import { Message } from "@/type/chat";
 
 function insertAtRightOffset(messages: Message[], message: Message): Message[] {
   // note: this won't work with id bigger than Number.MAX_SAFE_INTEGER
@@ -61,29 +61,26 @@ export default function useBindMessages() {
     });
 
     socket.on("user:connected", (userId: string) => {
-      const newListUser = [...listUser];
-      const index = newListUser.findIndex((u) => u.id === userId);
-      if (index !== -1) {
-        console.log("user:connected", newListUser[index]);
-        newListUser[index] = {
-          ...newListUser[index],
+      const user = listUser.get(userId);
+      if (user) {
+        listUser.set(userId, {
+          ...user,
           isOnline: true,
-        };
+        });
       }
-      setListUser(newListUser);
+      setListUser(listUser);
     });
 
-    socket.on("user:disconnected", (user: User) => {
-      console.log("user:disconnected", user);
-      const newListUser = [...listUser];
-      const index = newListUser.findIndex((u) => u.id === user.id);
-      if (index !== -1) {
-        newListUser[index] = {
-          ...newListUser[index],
+    socket.on("user:disconnected", (userId: string) => {
+      console.log("user:disconnected", userId);
+      const user = listUser.get(userId);
+      if (user) {
+        listUser.set(userId, {
+          ...user,
           isOnline: false,
-        };
+        });
+        setListUser(listUser);
       }
-      setListUser(newListUser);
     });
   }, [listChannel, listUser, setListChannel, setListUser]);
 }

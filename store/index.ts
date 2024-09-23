@@ -6,8 +6,8 @@ interface AppStore {
   setCurrentUser: (currentUser: User | null) => void;
   listChannel: Channel[];
   setListChannel: (listChannel: Channel[]) => void;
-  listUser: User[];
-  setListUser: (listUser: User[]) => void;
+  listUser: Map<string, User>;
+  setListUser: (listUser: Map<string, User>) => void;
   currentChannel: Channel | null;
   setCurrentChannel: (currentChannel: Channel | null) => void;
 }
@@ -17,7 +17,7 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrentUser: (currentUser) => set({ currentUser }),
   listChannel: [],
   setListChannel: (listChannel) => set({ listChannel }),
-  listUser: [],
+  listUser: new Map(),
   setListUser: (listUser) => set({ listUser }),
   currentChannel: null,
   setCurrentChannel: (currentChannel) => set({ currentChannel }),
@@ -27,6 +27,6 @@ export const useAppStore = create<AppStore>((set) => ({
 export const useGetUserByIdAppStore = (id?: string) => {
   if (!id) return null;
 
-  const user = useAppStore.getState().listUser.find((user) => user.id === id);
+  const user = useAppStore.getState().listUser.get(id);
   return user;
 };
