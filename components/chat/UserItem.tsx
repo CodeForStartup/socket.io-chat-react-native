@@ -20,6 +20,8 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         userId: channel?.users?.at(0),
       });
 
+      console.log("user:get", res);
+
       const user = listUser.get(res?.data?.id);
       if (user) {
         listUser.set(res?.data?.id, {

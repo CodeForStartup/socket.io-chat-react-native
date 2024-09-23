@@ -68,7 +68,7 @@ export default function useBindMessages() {
           isOnline: true,
         });
       }
-      setListUser(listUser);
+      setListUser(new Map(listUser));
     });
 
     socket.on("user:disconnected", (userId: string) => {
@@ -79,7 +79,7 @@ export default function useBindMessages() {
           ...user,
           isOnline: false,
         });
-        setListUser(listUser);
+        setListUser(new Map(listUser));
       }
     });
   }, [listChannel, listUser, setListChannel, setListUser]);
