@@ -6,19 +6,24 @@ import socket from "@/constants/socket";
 import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/context/auth";
 import { Message } from "@/type/chat";
+import { useAppStore } from "@/store";
 
 export default function ChatScreen() {
-  const [messages, setMessages] = useState<IMessage[]>([]);
   const { channelId } = useLocalSearchParams();
   const { user } = useAuth();
+  const listChannel = useAppStore((state) => state.listChannel);
+
+  const currentChannel = listChannel.find(
+    (channel) => channel.id === channelId
+  );
 
   const loadMessages = async () => {
     if (!channelId) return;
 
     const query = {
-      size: 20,
+      size: 100,
       channelId,
-      orderBy: "id:asc",
+      orderBy: "id:desc",
     };
 
     const res = await socket.emitWithAck("message:list", query);
@@ -27,17 +32,31 @@ export default function ChatScreen() {
       return;
     }
 
-    //
-    const newMessages = res.data.map((message: Message) => ({
-      _id: message.id,
-      text: message.content,
-      user: {
-        _id: message.from,
-        name: "user", // TODO: get user name from backend
-      },
-    }));
+    // const listMessages = res.data.map((message: Message) => ({
+    //   _id: message.id,
+    //   text: message.content,
+    //   user: {
+    //     _id: message.from,
+    //     name: "user", // TODO: get user name from backend
+    //   },
+    // }));
 
-    setMessages(newMessages);
+    await socket.emitWithAck("message:ack", {
+      channelId,
+      messageId: res.data.at(0)?._id,
+    });
+
+    const newChannel = listChannel.find((channel) => channel.id === channelId);
+    if (newChannel) {
+      newChannel.messages = res.data;
+      newChannel.isLoaded = true;
+      newChannel.unreadCount = 0;
+      useAppStore.setState({ listChannel: [...listChannel] });
+    }
+  };
+
+  const ackMessage = async (messageId: string) => {
+    // useAppStore.setState({ listChannel: [...listChannel] });
   };
 
   useEffect(() => {
@@ -51,7 +70,7 @@ export default function ChatScreen() {
         content: messages[0].text,
       });
 
-      setMessages((prev) => [...prev, messages[0]]);
+      // setMessages((prev) => [...prev, messages[0]]);
     } catch (error) {
       console.log(error);
     }
@@ -61,7 +80,15 @@ export default function ChatScreen() {
   // TODO: add message read/unread status
   return (
     <GiftedChat
-      messages={messages.reverse()}
+      messages={(currentChannel?.messages || []).map((message) => ({
+        _id: message.id,
+        text: message.content,
+        createdAt: new Date(),
+        user: {
+          _id: message.from,
+          name: "user",
+        },
+      }))}
       onSend={(messages) => onSend(messages)}
       user={{
         _id: user?.id!,

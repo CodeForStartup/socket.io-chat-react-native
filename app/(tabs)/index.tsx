@@ -21,6 +21,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const setListChannel = useAppStore((state) => state.setListChannel);
+  const listChannel = useAppStore((state) => state.listChannel);
+
+  console.log("::listChannel", listChannel);
 
   const handleGetListChannel = async () => {
     if (!socket.connected) {
