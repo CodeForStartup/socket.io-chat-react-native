@@ -19,7 +19,7 @@ export default function TabTwoScreen() {
       await onLogoutBE();
       AsyncStorage.removeItem("user");
       signOut();
-      router.replace("/login");
+      router.push("/login");
     } catch (error) {
       console.error(error);
     }

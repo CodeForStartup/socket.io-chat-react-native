@@ -1,5 +1,5 @@
 import { API_URL } from "@/constants";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 const logout = async (): Promise<void> => {

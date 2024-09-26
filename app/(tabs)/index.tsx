@@ -26,6 +26,8 @@ export default function HomeScreen() {
   console.log("::listChannel", listChannel);
 
   const handleGetListChannel = async () => {
+    console.log("socket.connected", socket.connected);
+
     if (!socket.connected) {
       return;
     }

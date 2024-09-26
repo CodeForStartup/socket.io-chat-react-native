@@ -7,9 +7,11 @@ export default function About() {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <Text variant="headlineLarge">CODE</Text>
-        <Text variant="headlineSmall">for</Text>
-        <Text variant="headlineLarge">STARTUP</Text>
+        <View style={styles.square}>
+          <Text variant="headlineLarge">CODE</Text>
+          <Text variant="headlineSmall">for</Text>
+          <Text variant="headlineLarge">STARTUP</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -18,8 +20,17 @@ export default function About() {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 32,
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    gap: 16,
+  },
+  square: {
+    width: 200,
+    height: 200,
+    borderWidth: 1,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    // borderRadius: 1
   },
 });
