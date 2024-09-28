@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { useEffect, useState } from "react";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import socket from "@/constants/socket";
 import { UserItem } from "@/components/chat/UserItem";
@@ -64,9 +64,9 @@ export default function HomeScreen() {
       >
         <Ionicons name="search" size={20} color="black" />
         <TextInput placeholder="Search" style={{ flex: 1 }} />
-        <Pressable onPress={handleAddFriend} style={{ padding: 8 }}>
+        <Link href={"/add-friend"} style={{ padding: 8 }}>
           <Ionicons name="person-add" size={20} color="black" />
-        </Pressable>
+        </Link>
       </View>
       <FlatList
         // style={{ paddingTop: 16 }}

@@ -12,7 +12,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.light.tabIconSelected,
-        headerShown: false,
       }}
     >
       <Tabs.Screen
@@ -31,6 +30,22 @@ export default function TabLayout() {
           ),
         }}
       />
+      {/* <Tabs.Screen
+        name="chat"
+        options={{
+          headerShown: false,
+        }}
+      /> */}
+      <Tabs.Screen
+        name="test"
+        options={{
+          href: null,
+          headerShown: true,
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tabs.Screen name="add-friend" options={{ href: null }} />
+      <Tabs.Screen name="chat" options={{ href: null }} />
       <Tabs.Screen
         name="user"
         options={{

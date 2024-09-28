@@ -47,7 +47,7 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
       <Pressable
         onPress={() =>
           router.push({
-            pathname: "/(chat)/chat",
+            pathname: "/(app)/chat",
             params: {
               channelId: channel?.id,
             },
