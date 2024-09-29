@@ -4,16 +4,13 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors.light.tabIconSelected,
-      }}
-    >
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
@@ -30,22 +27,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="chat"
-        options={{
-          headerShown: false,
-        }}
-      /> */}
-      <Tabs.Screen
-        name="test"
-        options={{
-          href: null,
-          headerShown: true,
-          tabBarStyle: { display: "none" },
-        }}
-      />
-      <Tabs.Screen name="add-friend" options={{ href: null }} />
-      <Tabs.Screen name="chat" options={{ href: null }} />
       <Tabs.Screen
         name="user"
         options={{

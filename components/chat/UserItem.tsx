@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Channel, ChannelType } from "@/type/chat";
 import socket from "@/constants/socket";
 import { useEffect } from "react";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { Badge, Text } from "react-native-paper";
 import { useAppStore, useGetUserByIdAppStore } from "@/store";
 
@@ -44,15 +44,16 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() =>
-          router.push({
-            pathname: "/(app)/chat",
-            params: {
-              channelId: channel?.id,
-            },
-          })
-        }
+      <Link
+        // onPress={() =>
+        //   router.push({
+        //     pathname: `/chat/${channel?.id}`,
+        //     params: {
+        //       channelId: channel?.id,
+        //     },
+        //   })
+        // }
+        href={`/(tabs)/(index)/${channel?.id}`}
         style={styles.button}
       >
         <View style={styles.hash}>
@@ -74,7 +75,7 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
         {Number(channel?.unreadCount) > 0 && (
           <Badge>{channel?.unreadCount}</Badge>
         )}
-      </Pressable>
+      </Link>
     </View>
   );
 };

@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { useEffect, useState } from "react";
 import socket from "@/constants/socket";
-import { useLocalSearchParams } from "expo-router";
+import { useGlobalSearchParams, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/context/auth";
 import { Message } from "@/type/chat";
 import { useAppStore } from "@/store";

@@ -64,7 +64,7 @@ export default function HomeScreen() {
       >
         <Ionicons name="search" size={20} color="black" />
         <TextInput placeholder="Search" style={{ flex: 1 }} />
-        <Link href={"/add-friend"} style={{ padding: 8 }}>
+        <Link href={"/(tabs)/(index)/add-friend"} style={{ padding: 8 }}>
           <Ionicons name="person-add" size={20} color="black" />
         </Link>
       </View>
