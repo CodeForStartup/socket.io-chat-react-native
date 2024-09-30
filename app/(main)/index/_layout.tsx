@@ -4,17 +4,13 @@ import React from "react";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors.light.tabIconSelected,
-        headerShown: false,
-      }}
-    >
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
@@ -51,7 +47,6 @@ export default function TabLayout() {
         name="about"
         options={{
           title: "About",
-
           tabBarItemStyle: {},
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon

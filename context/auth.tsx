@@ -47,7 +47,7 @@ function useProtectedRoute(user: UserCredentials | null) {
     } else if (user && inAuthGroup) {
       // || segments[0] === "[...404]")
       // Redirect away from the sign-in page.
-      router.replace("/(tabs)");
+      router.replace("/(main)");
     }
   }, [user, segments]);
 }
