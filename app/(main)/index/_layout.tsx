@@ -47,7 +47,6 @@ export default function TabLayout() {
         name="about"
         options={{
           title: "About",
-
           tabBarItemStyle: {},
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon

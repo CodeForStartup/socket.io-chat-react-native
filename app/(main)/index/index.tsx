@@ -43,10 +43,6 @@ export default function HomeScreen() {
     }
   };
 
-  const handleAddFriend = async () => {
-    router.push("/add-friend");
-  };
-
   useEffect(() => {
     handleGetListChannel();
   }, []);
@@ -64,7 +60,7 @@ export default function HomeScreen() {
       >
         <Ionicons name="search" size={20} color="black" />
         <TextInput placeholder="Search" style={{ flex: 1 }} />
-        <Link href={"/(tabs)/(index)/add-friend"} style={{ padding: 8 }}>
+        <Link href={"/chat/add-friend"} style={{ padding: 8 }}>
           <Ionicons name="person-add" size={20} color="black" />
         </Link>
       </View>

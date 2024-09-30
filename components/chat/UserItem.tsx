@@ -44,18 +44,7 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
 
   return (
     <View style={styles.container}>
-      <Link
-        // onPress={() =>
-        //   router.push({
-        //     pathname: `/chat/${channel?.id}`,
-        //     params: {
-        //       channelId: channel?.id,
-        //     },
-        //   })
-        // }
-        href={`/(tabs)/(index)/${channel?.id}`}
-        style={styles.button}
-      >
+      <Link href={`/chat/${channel?.id}`} style={styles.button}>
         <View style={styles.hash}>
           <Text>{channel?.type === ChannelType.PUBLIC ? "#" : "@"}</Text>
           {channel?.type === ChannelType.PRIVATE && (
