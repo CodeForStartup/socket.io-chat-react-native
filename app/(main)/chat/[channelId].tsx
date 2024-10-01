@@ -50,7 +50,7 @@ export default function ChatScreen() {
 
     await socket.emitWithAck("message:ack", {
       channelId,
-      messageId: res.data.at(0)?._id,
+      messageId: res.data?.at(0)?.id,
     });
 
     const newChannel = listChannel.find((channel) => channel.id === channelId);
