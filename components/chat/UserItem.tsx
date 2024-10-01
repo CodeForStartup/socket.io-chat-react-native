@@ -45,25 +45,27 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
   return (
     <View style={styles.container}>
       <Link href={`/chat/${channel?.id}`} style={styles.button}>
-        <View style={styles.hash}>
-          <Text>{channel?.type === ChannelType.PUBLIC ? "#" : "@"}</Text>
-          {channel?.type === ChannelType.PRIVATE && (
-            <View
-              style={[
-                styles.dot,
-                { backgroundColor: user?.isOnline ? "green" : "red" },
-              ]}
-            />
+        <View style={styles.itemContainer}>
+          <View style={styles.hash}>
+            <Text>{channel?.type === ChannelType.PUBLIC ? "#" : "@"}</Text>
+            {channel?.type === ChannelType.PRIVATE && (
+              <View
+                style={[
+                  styles.dot,
+                  { backgroundColor: user?.isOnline ? "green" : "red" },
+                ]}
+              />
+            )}
+          </View>
+          <Text variant="labelLarge" style={styles.label}>
+            {channel?.type === ChannelType.PRIVATE
+              ? user?.username
+              : channel?.name}
+          </Text>
+          {Number(channel?.unreadCount) > 0 && (
+            <Badge>{channel?.unreadCount}</Badge>
           )}
         </View>
-        <Text variant="labelLarge" style={styles.label}>
-          {channel?.type === ChannelType.PRIVATE
-            ? user?.username
-            : channel?.name}
-        </Text>
-        {Number(channel?.unreadCount) > 0 && (
-          <Badge>{channel?.unreadCount}</Badge>
-        )}
       </Link>
     </View>
   );
@@ -72,13 +74,23 @@ export const UserItem = ({ channel }: { channel: Channel }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    borderBottomWidth: 1,
     borderColor: "#e0e0e0",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  button: {
+  itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  button: {
+    width: "100%",
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
   },
   label: {
     color: "#000",

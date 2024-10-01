@@ -48,7 +48,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           padding: 16,
@@ -74,6 +74,10 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",

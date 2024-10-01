@@ -5,6 +5,7 @@ import { Pressable } from "react-native";
 export default function RootLayout() {
   return (
     <Stack
+      // initialRouteName="index"
       screenOptions={{
         // headerShown: false,
         contentStyle: { backgroundColor: "white" },
@@ -21,9 +22,9 @@ export default function RootLayout() {
         // headerBorderVisible: false,
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="chat/[channelId]" />
-      <Stack.Screen name="chat/add-friend" options={{ headerShown: false }} />
+      <Stack.Screen name="chat/add-friend" />
     </Stack>
   );
 }
