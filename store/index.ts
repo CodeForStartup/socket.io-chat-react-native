@@ -30,3 +30,6 @@ export const useGetUserByIdAppStore = (id?: string) => {
   const user = useAppStore.getState().listUser.get(id);
   return user;
 };
+
+// select list channel
+export const selectListChannel = (state: AppStore) => state.listChannel;

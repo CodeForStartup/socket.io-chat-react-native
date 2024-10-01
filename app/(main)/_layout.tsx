@@ -23,8 +23,18 @@ export default function RootLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="chat/[channelId]" />
-      <Stack.Screen name="chat/add-friend" />
+      <Stack.Screen
+        name="chat/[channelId]"
+        options={{ headerShown: true, headerTitle: "Chat" }}
+      />
+      <Stack.Screen
+        name="chat/add-friend"
+        options={{ headerTitle: "Add Friend" }}
+      />
+      <Stack.Screen
+        name="chat/add-group"
+        options={{ headerTitle: "Add Group" }}
+      />
     </Stack>
   );
 }
