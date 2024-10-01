@@ -1,20 +1,36 @@
-import { StyleSheet } from "react-native";
+import {
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { useEffect, useState } from "react";
 import socket from "@/constants/socket";
-import { useGlobalSearchParams, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/context/auth";
-import { Message } from "@/type/chat";
+import { ChannelType, Message } from "@/type/chat";
 import { useAppStore } from "@/store";
+import { Text } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ChatScreen() {
   const { channelId } = useLocalSearchParams();
   const { user } = useAuth();
   const listChannel = useAppStore((state) => state.listChannel);
+  const listUser = useAppStore((state) => state.listUser);
 
   const currentChannel = listChannel.find(
     (channel) => channel.id === channelId
+  );
+
+  const [title, setTitle] = useState(
+    currentChannel?.type === ChannelType.PUBLIC
+      ? currentChannel?.name
+      : currentChannel?.users
+          .map((user) => listUser.get(user)?.username)
+          .join(", ")
   );
 
   const loadMessages = async () => {
@@ -32,15 +48,6 @@ export default function ChatScreen() {
       return;
     }
 
-    // const listMessages = res.data.map((message: Message) => ({
-    //   _id: message.id,
-    //   text: message.content,
-    //   user: {
-    //     _id: message.from,
-    //     name: "user", // TODO: get user name from backend
-    //   },
-    // }));
-
     await socket.emitWithAck("message:ack", {
       channelId,
       messageId: res.data.at(0)?._id,
@@ -53,10 +60,6 @@ export default function ChatScreen() {
       newChannel.unreadCount = 0;
       useAppStore.setState({ listChannel: [...listChannel] });
     }
-  };
-
-  const ackMessage = async (messageId: string) => {
-    // useAppStore.setState({ listChannel: [...listChannel] });
   };
 
   useEffect(() => {
@@ -76,28 +79,69 @@ export default function ChatScreen() {
     }
   };
 
-  // TODO: add typing indicator
-  // TODO: add message read/unread status
   return (
-    <GiftedChat
-      messages={(currentChannel?.messages || []).map((message) => ({
-        _id: message.id,
-        text: message.content,
-        createdAt: new Date(),
-        user: {
-          _id: message.from,
-          name: "user",
-        },
-      }))}
-      onSend={(messages) => onSend(messages)}
-      user={{
-        _id: user?.id!,
-      }}
-    />
+    <SafeAreaView style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          headerTitle: () => (
+            <View style={styles.headerTitle}>
+              <View style={styles.userIcons}>
+                <Ionicons
+                  name={
+                    currentChannel?.type === ChannelType.PUBLIC
+                      ? "people"
+                      : "person"
+                  }
+                  size={16}
+                  color="black"
+                />
+              </View>
+              <Text style={styles.headerTitleText}>{title}</Text>
+            </View>
+          ),
+        }}
+      />
+      <KeyboardAvoidingView style={{ flex: 1 }}>
+        <GiftedChat
+          messages={(currentChannel?.messages || []).map((message) => ({
+            _id: message.id,
+            text: message.content,
+            createdAt: new Date(),
+            user: {
+              _id: message.from,
+              name: "user",
+            },
+          }))}
+          onSend={(messages) => onSend(messages)}
+          user={{
+            _id: user?.id!,
+          }}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  headerTitle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    width: "100%",
+  },
+  headerTitleText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  userIcons: {
+    width: 24,
+    height: 24,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "#eee",
+  },
   button: {
     padding: 16,
     backgroundColor: "red",
