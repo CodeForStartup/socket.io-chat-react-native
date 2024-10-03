@@ -11,7 +11,6 @@ export default function AddFriendScreen() {
     const rs = await socket.emitWithAck("user:search", {
       q: "",
     });
-    console.log(rs.data);
 
     setUsers(rs.data);
   };

@@ -13,7 +13,7 @@ import {
 import { Text } from "react-native-paper";
 
 import { useEffect, useState } from "react";
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 import socket from "@/constants/socket";
 import { UserItem } from "@/components/chat/UserItem";
 import { Channel, ChannelType } from "@/type/chat";
@@ -42,8 +42,6 @@ export default function HomeScreen() {
   ];
 
   const handleGetListChannel = async () => {
-    console.log("socket.connected", socket.connected);
-
     if (!socket.connected) {
       return;
     }
@@ -59,9 +57,9 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     handleGetListChannel();
-  }, []);
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,11 +75,6 @@ export default function HomeScreen() {
         <Ionicons name="search" size={20} color="black" />
         <TextInput placeholder="Search" style={{ flex: 1 }} />
       </View>
-      {/* <FlatList
-        // style={{ paddingTop: 16 }}
-        data={listChannel}
-        renderItem={({ item }) => <UserItem channel={item} />}
-      /> */}
       <SectionList
         sections={channelSection}
         renderItem={({ item }) => <UserItem channel={item} />}
@@ -89,7 +82,6 @@ export default function HomeScreen() {
           <View
             style={{
               paddingHorizontal: 16,
-              paddingVertical: 8,
               backgroundColor: "#eee",
               flexDirection: "row",
               alignItems: "center",
@@ -104,7 +96,7 @@ export default function HomeScreen() {
                   ? "/chat/add-group"
                   : "/chat/add-friend"
               }
-              style={{ padding: 8 }}
+              style={{ padding: 12 }}
             >
               <Ionicons
                 name={section.key === "Groups" ? "people" : "person-add"}

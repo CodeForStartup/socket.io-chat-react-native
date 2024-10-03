@@ -1,4 +1,4 @@
-import { Channel, User } from "@/type/chat";
+import { Channel, ChannelType, User } from "@/type/chat";
 import { create } from "zustand";
 
 interface AppStore {
@@ -33,3 +33,7 @@ export const useGetUserByIdAppStore = (id?: string) => {
 
 // select list channel
 export const selectListChannel = (state: AppStore) => state.listChannel;
+
+// select public channel
+export const selectPublicChannel = (state: AppStore) =>
+  state.listChannel.filter((channel) => channel.type === ChannelType.PUBLIC);
