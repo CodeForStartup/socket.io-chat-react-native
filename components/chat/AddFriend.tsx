@@ -1,20 +1,25 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Channel, ChannelType } from "@/type/chat";
 import { Text, Button } from "react-native-paper";
 import socket from "@/constants/socket";
 import { useState } from "react";
 
-export default function AddUser({ channel }: { channel: Channel }) {
-  const [loading, setLoading] = useState(false);
-  const [isJoined, setIsJoined] = useState(false);
+export interface FriendType {
+  id: string;
+  username: string;
+}
 
-  const onJoin = async () => {
+export default function AddFriend({ id, username }: FriendType) {
+  const [loading, setLoading] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const addFriend = async () => {
     try {
       setLoading(true);
-      await socket.emitWithAck("channel:join", {
-        channelId: channel.id,
+      await socket.emitWithAck("user:reach", {
+        userIds: [id],
       });
-      setIsJoined(true);
+      setIsAdded(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -26,20 +31,20 @@ export default function AddUser({ channel }: { channel: Channel }) {
     <View style={styles.container}>
       <View style={styles.itemContainer}>
         <View style={styles.hash}>
-          <Text>{channel?.type === ChannelType.PUBLIC ? "#" : "@"}</Text>
+          <Text>@</Text>
         </View>
         <Text variant="labelLarge" style={styles.label}>
-          {channel?.name}
+          {username}
         </Text>
       </View>
       <View>
         <Button
           mode="text"
-          onPress={onJoin}
+          onPress={addFriend}
           loading={loading}
-          disabled={isJoined}
+          disabled={isAdded}
         >
-          {isJoined ? "JOINED" : "JOIN"}
+          Add
         </Button>
       </View>
     </View>
@@ -82,19 +87,5 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: "center",
     alignItems: "center",
-  },
-  dot: {
-    color: "#000",
-    fontSize: 40,
-    padding: 0,
-    margin: 0,
-    backgroundColor: "red",
-    borderRadius: 10,
-    lineHeight: 0,
-    position: "absolute",
-    width: 8,
-    height: 8,
-    right: 0,
-    bottom: 0,
   },
 });

@@ -12,11 +12,10 @@ import {
 } from "react-native";
 import { Text } from "react-native-paper";
 
-import { useEffect, useState } from "react";
-import { Link, router, useFocusEffect } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import socket from "@/constants/socket";
 import { UserItem } from "@/components/chat/UserItem";
-import { Channel, ChannelType } from "@/type/chat";
+import { ChannelType } from "@/type/chat";
 import { selectListChannel, useAppStore } from "@/store";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -72,8 +71,10 @@ export default function HomeScreen() {
           gap: 8,
         }}
       >
-        <Ionicons name="search" size={20} color="black" />
-        <TextInput placeholder="Search" style={{ flex: 1 }} />
+        <Text variant="headlineLarge" style={{ fontWeight: "700" }}>
+          Socket.io{" "}
+          <Text style={{ fontWeight: "700", color: "tomato" }}>Chat</Text>
+        </Text>
       </View>
       <SectionList
         sections={channelSection}

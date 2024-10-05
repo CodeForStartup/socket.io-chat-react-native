@@ -1,4 +1,4 @@
-import AddUser from "@/components/chat/AddUser";
+import JoinChannel from "@/components/chat/JoinChannel";
 import { UserItem } from "@/components/chat/UserItem";
 import socket from "@/constants/socket";
 import { selectPublicChannel, useAppStore } from "@/store";
@@ -83,7 +83,7 @@ export default function AddGroupScreen() {
       <View style={styles.container}>
         <FlatList
           data={channels}
-          renderItem={({ item }) => <AddUser channel={item} />}
+          renderItem={({ item }) => <JoinChannel channel={item} />}
         />
       </View>
     </KeyboardAvoidingView>
