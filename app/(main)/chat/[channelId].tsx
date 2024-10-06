@@ -24,6 +24,17 @@ export default function ChatScreen() {
   const currentChannel = listChannel.find(
     (channel) => channel.id === channelId
   );
+  const [messages, setMessages] = useState(
+    (currentChannel?.messages || []).map((message) => ({
+      _id: message.id,
+      text: message.content,
+      createdAt: new Date(),
+      user: {
+        _id: message.from,
+        name: "user",
+      },
+    }))
+  );
 
   const [title, setTitle] = useState(
     currentChannel?.type === ChannelType.PUBLIC
@@ -66,14 +77,25 @@ export default function ChatScreen() {
     loadMessages();
   }, []);
 
-  const onSend = async (messages: IMessage[]) => {
+  const onSend = async (newMessage: IMessage[]) => {
     try {
-      await socket.emitWithAck("message:send", {
+      const res = await socket.emitWithAck("message:send", {
         channelId: channelId,
-        content: messages[0].text,
+        content: newMessage[0].text,
       });
 
-      // setMessages((prev) => [...prev, messages[0]]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          _id: res?.data?.id,
+          text: newMessage[0].text,
+          createdAt: new Date(),
+          user: {
+            _id: String(user?.id),
+            name: "user",
+          },
+        },
+      ]);
     } catch (error) {
       console.log(error);
     }
@@ -103,18 +125,10 @@ export default function ChatScreen() {
       />
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <GiftedChat
-          messages={(currentChannel?.messages || []).map((message) => ({
-            _id: message.id,
-            text: message.content,
-            createdAt: new Date(),
-            user: {
-              _id: message.from,
-              name: "user",
-            },
-          }))}
-          onSend={(messages) => onSend(messages)}
+          messages={messages}
+          onSend={(mgs: IMessage[]) => onSend(mgs)}
           user={{
-            _id: user?.id!,
+            _id: String(user?.id),
           }}
         />
       </KeyboardAvoidingView>
