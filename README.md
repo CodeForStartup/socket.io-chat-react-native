@@ -21,16 +21,16 @@ This is an React Native socket.io chat example
 
 ## Technical
 
-🥳 React Native
-😍 Expo
-🥰 socket.io-client
-🥹 Zod - Form validation
-🤩 React-i18next - Multiple language
-😂 Zustand - State management
-😋 react-native-gifted-chat - For chat form
-😜 react-native-paper - UI lib
-😎 react-native-reanimated
-And ....
+🥳 React Native  
+😍 Expo  
+🥰 socket.io-client  
+🥹 Zod - Form validation  
+🤩 React-i18next - Multiple language  
+😂 Zustand - State management  
+😋 react-native-gifted-chat - For chat form  
+😜 react-native-paper - UI lib  
+😎 react-native-reanimated  
+And ....  
 
 
 ## Get a fresh project
