@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import socket from "@/constants/socket";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/context/auth";
-import { ChannelType, Message } from "@/type/chat";
+import { ChannelType } from "@/type/chat";
 import { useAppStore } from "@/store";
 import { Text } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -59,6 +59,18 @@ export default function ChatScreen() {
       return;
     }
 
+    setMessages(
+      (res.data || []).map((mgs) => ({
+        _id: mgs.id,
+        text: mgs.content,
+        createdAt: new Date(),
+        user: {
+          _id: mgs.from,
+          name: "user",
+        },
+      }))
+    );
+
     await socket.emitWithAck("message:ack", {
       channelId,
       messageId: res.data?.at(0)?.id,
@@ -85,7 +97,6 @@ export default function ChatScreen() {
       });
 
       setMessages((prev) => [
-        ...prev,
         {
           _id: res?.data?.id,
           text: newMessage[0].text,
@@ -95,6 +106,7 @@ export default function ChatScreen() {
             name: "user",
           },
         },
+        ...prev,
       ]);
     } catch (error) {
       console.log(error);
